@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Question Bank</title>
+  <style>
+    :root {
+      --bg: #f6f7f9;
+      --card: #ffffff;
+      --text: #1c1e21;
+      --muted: #6b7280;
+      --border: #e2e5ea;
+      --accent: #3b6cf6;
+      --correct: #1a9f56;
+      --incorrect: #d93a3a;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+      background: var(--bg);
+      color: var(--text);
+    }
+    main { max-width: 720px; margin: 0 auto; padding: 2rem 1rem 4rem; }
+    h1 { margin-bottom: 1rem; }
+    h2 { margin: 1.25rem 0 0.25rem; font-size: 1.2rem; }
+    #summary { color: var(--muted); margin-bottom: 1.25rem; font-size: 0.9rem; }
+
+    /* ---------- Tabs ---------- */
+    #tabs {
+      display: flex;
+      gap: 0.35rem;
+      overflow-x: auto;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 0;
+    }
+    .tab {
+      flex: none;
+      background: transparent;
+      color: var(--muted);
+      border: 1px solid transparent;
+      border-bottom: none;
+      border-radius: 8px 8px 0 0;
+      padding: 0.5rem 0.9rem;
+      font-size: 0.9rem;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+    .tab:hover { color: var(--text); filter: none; }
+    .tab[aria-selected="true"] {
+      background: var(--card);
+      color: var(--accent);
+      font-weight: 600;
+      border-color: var(--border);
+      margin-bottom: -1px;            /* merges with the content area border */
+      padding-bottom: calc(0.5rem + 1px);
+    }
+    .tab:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+    /* ---------- Cards ---------- */
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 1rem 1.25rem;
+      margin-bottom: 1rem;
+    }
+    .card .meta { font-size: 0.8rem; color: var(--muted); margin-bottom: 0.4rem; }
+    .card .prompt { font-weight: 600; margin-bottom: 0.75rem; }
+
+    .answer-row { display: flex; gap: 0.5rem; }
+    .answer-row input[type="text"] {
+      flex: 1; padding: 0.5rem 0.7rem;
+      border: 1px solid var(--border); border-radius: 6px; font-size: 1rem;
+    }
+    button {
+      padding: 0.5rem 1rem; border: none; border-radius: 6px;
+      background: var(--accent); color: white; font-size: 0.95rem; cursor: pointer;
+    }
+    button:hover { filter: brightness(1.1); }
+
+    .feedback { margin-top: 0.6rem; font-size: 0.9rem; min-height: 1.2em; }
+    .feedback.correct { color: var(--correct); }
+    .feedback.incorrect { color: var(--incorrect); }
+
+    details summary { cursor: pointer; color: var(--accent); user-select: none; }
+    details .revealed { margin-top: 0.6rem; padding: 0.7rem; background: var(--bg); border-radius: 6px; }
+    details.with-input { margin-top: 0.4rem; }
+
+    #error {
+      background: #fdecec; border: 1px solid var(--incorrect);
+      color: var(--incorrect); padding: 1rem; border-radius: 8px; margin-bottom: 1rem;
+    }
+    #fallback { margin-top: 0.5rem; }
+    [hidden] { display: none !important; }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>Question Bank</h1>
+
+    <div id="error" hidden>
+      <div id="error-msg"></div>
+      <div id="fallback">
+        Or load the file manually:
+        <input type="file" id="file-input" accept=".json,application/json" />
+      </div>
+    </div>
+
+    <div id="summary"></div>
+    <div id="tabs" role="tablist" aria-label="Chapters"></div>
+    <div id="panels"></div>
+  </main>
+
+  <script>
+    // ---------- Configuration ----------
+    const DATA_URL = "questions.json";
+
+    // ---------- Renderers: one per answer type ----------
+    function buildReveal(q) {
+      const details = document.createElement("details");
+      const summary = document.createElement("summary");
+      summary.textContent = "Show answer";
+
+      const revealed = document.createElement("div");
+      revealed.className = "revealed";
+      revealed.textContent = q.answer;
+
+      details.append(summary, revealed);
+      return details;
+    }
+
+    function renderText(q, onResult) {
+      const wrap = document.createElement("div");
+
+      const row = document.createElement("div");
+      row.className = "answer-row";
+
+      const input = document.createElement("input");
+      input.type = "text";
+      input.placeholder = "Type your answer...";
+      input.autocomplete = "off";
+      input.spellcheck = false;
+
+      const btn = document.createElement("button");
+      btn.textContent = "Check";
+
+      const feedback = document.createElement("div");
+      feedback.className = "feedback";
+
+      const check = () => {
+        // Case-sensitive exact comparison (only surrounding whitespace is trimmed)
+        const correct = input.value.trim() === String(q.answer);
+        feedback.className = "feedback " + (correct ? "correct" : "incorrect");
+        feedback.textContent = correct
+          ? "✓ Correct!"
+          : "✗ Not quite. Try again (case sensitive).";
+        onResult(correct);
+      };
+
+      btn.addEventListener("click", check);
+      input.addEventListener("keydown", e => { if (e.key === "Enter") check(); });
+
+      const reveal = buildReveal(q);
+      reveal.classList.add("with-input");
+
+      row.append(input, btn);
+      wrap.append(row, feedback, reveal);
+      return wrap;
+    }
+
+    function renderReveal(q) {
+      return buildReveal(q);
+    }
+
+    const RENDERERS = {
+      text: renderText,
+      reveal: renderReveal
+    };
+
+    // ---------- Application state ----------
+    const state = {
+      chapters: [],          // normalized chapter list
+      correct: new Set(),    // keys like "1:3" (chapter:questionId)
+      active: 0              // index of the selected chapter tab
+    };
+
+    const qKey = (chapter, q, i) => `${chapter.chapter}:${q.id ?? i}`;
+
+    // ---------- Summary ----------
+    function updateSummary() {
+      const ch = state.chapters[state.active];
+      if (!ch) { document.getElementById("summary").textContent = ""; return; }
+
+      const chapterCorrect = ch.questions
+        .filter((q, i) => state.correct.has(qKey(ch, q, i))).length;
+      const totalQuestions = state.chapters.reduce((n, c) => n + c.questions.length, 0);
+
+      document.getElementById("summary").textContent =
+        `This chapter: ${ch.questions.length} question(s), ${chapterCorrect} answered correctly` +
+        ` · Overall: ${state.correct.size} correct out of ${totalQuestions} question(s)`;
+    }
+
+    // ---------- Question cards ----------
+    function renderQuestion(chapter, q, index) {
+      const card = document.createElement("section");
+      card.className = "card";
+
+      const meta = document.createElement("div");
+      meta.className = "meta";
+      meta.textContent = `Ch ${chapter.chapter} · Q${q.id ?? index + 1}` +
+        (q.category ? ` · ${q.category}` : "");
+
+      const prompt = document.createElement("div");
+      prompt.className = "prompt";
+      prompt.textContent = q.question;
+
+      card.append(meta, prompt);
+
+      const renderer = RENDERERS[q.type];
+      if (!renderer) {
+        const warn = document.createElement("div");
+        warn.className = "feedback incorrect";
+        warn.textContent = `Unknown question type: "${q.type}"`;
+        card.append(warn);
+      } else {
+        card.append(renderer(q, correct => {
+          const key = qKey(chapter, q, index);
+          if (correct) state.correct.add(key);
+          else state.correct.delete(key);
+          updateSummary();
+        }));
+      }
+      return card;
+    }
+
+    // ---------- Tabs ----------
+    const tabId = i => `tab-${i}`;
+    const panelId = i => `panel-${i}`;
+
+    function selectTab(index, { updateHash = true, focus = false } = {}) {
+      const count = state.chapters.length;
+      if (!count) return;
+      index = ((index % count) + count) % count; // wrap around
+      state.active = index;
+
+      state.chapters.forEach((_, i) => {
+        const selected = i === index;
+        const tab = document.getElementById(tabId(i));
+        tab.setAttribute("aria-selected", String(selected));
+        tab.tabIndex = selected ? 0 : -1;
+        document.getElementById(panelId(i)).hidden = !selected;
+      });
+
+      if (focus) document.getElementById(tabId(index)).focus();
+      if (updateHash) history.replaceState(null, "", `#chapter-${state.chapters[index].chapter}`);
+      updateSummary();
+    }
+
+    function buildTabs() {
+      const tabs = document.getElementById("tabs");
+      tabs.innerHTML = "";
+
+      state.chapters.forEach((ch, i) => {
+        const tab = document.createElement("button");
+        tab.className = "tab";
+        tab.id = tabId(i);
+        tab.type = "button";
+        tab.setAttribute("role", "tab");
+        tab.setAttribute("aria-controls", panelId(i));
+        tab.textContent = `Ch ${ch.chapter}`;
+        tab.title = ch.title || "";
+        tab.addEventListener("click", () => selectTab(i));
+        tabs.append(tab);
+      });
+
+      // Keyboard navigation: left/right arrows, Home/End
+      tabs.onkeydown = e => {
+        if (e.key === "ArrowRight") { e.preventDefault(); selectTab(state.active + 1, { focus: true }); }
+        else if (e.key === "ArrowLeft") { e.preventDefault(); selectTab(state.active - 1, { focus: true }); }
+        else if (e.key === "Home") { e.preventDefault(); selectTab(0, { focus: true }); }
+        else if (e.key === "End") { e.preventDefault(); selectTab(state.chapters.length - 1, { focus: true }); }
+      };
+    }
+
+    function buildPanels() {
+      const panels = document.getElementById("panels");
+      panels.innerHTML = "";
+
+      state.chapters.forEach((ch, i) => {
+        const panel = document.createElement("div");
+        panel.id = panelId(i);
+        panel.setAttribute("role", "tabpanel");
+        panel.setAttribute("aria-labelledby", tabId(i));
+        panel.hidden = true;
+
+        const heading = document.createElement("h2");
+        heading.textContent = `Chapter ${ch.chapter}: ${ch.title ?? ""}`;
+        panel.append(heading);
+
+        if (!ch.questions.length) {
+          const empty = document.createElement("p");
+          empty.className = "meta";
+          empty.textContent = "No questions in this chapter yet.";
+          panel.append(empty);
+        }
+
+        ch.questions.forEach((q, qi) => panel.append(renderQuestion(ch, q, qi)));
+        panels.append(panel);
+      });
+    }
+
+    // ---------- Data handling ----------
+    function normalize(data) {
+      if (!Array.isArray(data)) {
+        throw new Error("Expected a JSON array of chapters.");
+      }
+      return data.map((ch, i) => ({
+        chapter: ch.chapter ?? i + 1,
+        title: ch.title ?? "",
+        questions: Array.isArray(ch.questions) ? ch.questions : []
+      }));
+    }
+
+    function chapterIndexFromHash() {
+      const m = location.hash.match(/^#chapter-(.+)$/);
+      if (!m) return 0;
+      const idx = state.chapters.findIndex(c => String(c.chapter) === m[1]);
+      return idx >= 0 ? idx : 0;
+    }
+
+    function render(data) {
+      state.chapters = normalize(data);
+      state.correct.clear();
+      document.getElementById("error").hidden = true;
+
+      buildTabs();
+      buildPanels();
+      selectTab(chapterIndexFromHash(), { updateHash: false });
+    }
+
+    function showError(msg) {
+      document.getElementById("error-msg").textContent = msg;
+      document.getElementById("error").hidden = false;
+    }
+
+    async function load() {
+      try {
+        const res = await fetch(DATA_URL);
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        render(await res.json());
+      } catch (err) {
+        showError(
+          `Could not load ${DATA_URL} (${err.message}). ` +
+          `Browsers often block fetch() on file:// URLs. Run a local server ` +
+          `(e.g. "python3 -m http.server") and open http://localhost:8000.`
+        );
+      }
+    }
+
+    // Fallback: manual file selection
+    document.getElementById("file-input").addEventListener("change", async e => {
+      const file = e.target.files[0];
+      if (!file) return;
+      try {
+        render(JSON.parse(await file.text()));
+      } catch (err) {
+        showError("Invalid data file: " + err.message);
+      }
+    });
+
+    // Support back/forward or manual hash edits
+    window.addEventListener("hashchange", () => {
+      if (state.chapters.length) selectTab(chapterIndexFromHash(), { updateHash: false });
+    });
+
+    load();
+  </script>
+</body>
+</html>

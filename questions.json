@@ -1,0 +1,586 @@
+[
+  {
+    "chapter": 7,
+    "title": "Manage Files from the Command Line",
+    "questions": [
+    {
+      "id": 7,
+      "type": "text",
+      "category": "Paths",
+      "question": "Which command returns you to the previous working directory? (command and argument, single space between)",
+      "answer": "cd -"
+    },
+    {
+      "id": 8,
+      "type": "text",
+      "category": "Paths",
+      "question": "Which command, with no arguments, changes to your home directory?",
+      "answer": "cd"
+    },
+    {
+      "id": 11,
+      "type": "text",
+      "category": "File Management",
+      "question": "Which command creates /tmp/a/b/c, including any missing parent directories? (use the short option)",
+      "answer": "mkdir -p /tmp/a/b/c"
+    },
+    {
+      "id": 12,
+      "type": "text",
+      "category": "File Management",
+      "question": "Which command copies the file file1 to a new file named file2 in the current directory? (no options)",
+      "answer": "cp file1 file2"
+    },
+    {
+      "id": 13,
+      "type": "text",
+      "category": "File Management",
+      "question": "Which command recursively copies the directory /tmp/src to /tmp/dst? (use the lowercase short option)",
+      "answer": "cp -r /tmp/src /tmp/dst"
+    },
+    {
+      "id": 14,
+      "type": "text",
+      "category": "File Management",
+      "question": "Which command renames old.txt to new.txt in the current directory?",
+      "answer": "mv old.txt new.txt"
+    },
+    {
+      "id": 15,
+      "type": "text",
+      "category": "File Management",
+      "question": "Which command removes the empty directory /tmp/empty? (no options)",
+      "answer": "rmdir /tmp/empty"
+    },
+    {
+      "id": 16,
+      "type": "text",
+      "category": "File Management",
+      "question": "Which command removes the directory /tmp/lab and everything inside it? (use only the lowercase recursive short option, no -f)",
+      "answer": "rm -r /tmp/lab"
+    },
+    {
+      "id": 17,
+      "type": "text",
+      "category": "File Management",
+      "question": "Which command lists the contents of the current directory recursively? (use the uppercase short option)",
+      "answer": "ls -R"
+    },
+    {
+      "id": 18,
+      "type": "text",
+      "category": "Links",
+      "question": "Which command creates a hard link named hard.txt that points to the existing file orig.txt? (no options)",
+      "answer": "ln orig.txt hard.txt"
+    },
+    {
+      "id": 19,
+      "type": "text",
+      "category": "Links",
+      "question": "Which command creates a symbolic link named sym.txt that points to the existing file orig.txt?",
+      "answer": "ln -s orig.txt sym.txt"
+    },
+    {
+      "id": 20,
+      "type": "text",
+      "category": "Links",
+      "question": "Which command shows a long listing of the current directory with the inode number of each file? (use the combined short options l then i)",
+      "answer": "ls -li"
+    },
+    {
+      "id": 21,
+      "type": "reveal",
+      "category": "Links",
+      "question": "What is the difference between a hard link and a symbolic (soft) link?",
+      "answer": "A hard link is an additional directory entry (file name) that points to the same inode and data as the original file, so both names are equally valid and share the same inode number. A symbolic link is a separate file with its own inode whose content is the path to another file or directory; it is only a pointer to a name."
+    },
+    {
+      "id": 22,
+      "type": "reveal",
+      "category": "Links",
+      "question": "What happens to a hard link and to a symbolic link if the original file name is deleted?",
+      "answer": "The hard link keeps working because the data is only freed when the last hard link (link count of 0) is removed. The symbolic link becomes a dangling (broken) link because the path it points to no longer exists."
+    },
+    {
+      "id": 23,
+      "type": "reveal",
+      "category": "Links",
+      "question": "What are the restrictions of hard links that symbolic links do not have?",
+      "answer": "Hard links cannot span different file systems because they reference an inode on the same file system, and they cannot normally be created for directories. Symbolic links can point across file systems and can point to directories."
+    },
+    {
+      "id": 24,
+      "type": "text",
+      "category": "Globbing",
+      "question": "Which pattern-matching character matches any string of zero or more characters? (one character)",
+      "answer": "*"
+    },
+    {
+      "id": 25,
+      "type": "text",
+      "category": "Globbing",
+      "question": "Which pattern-matching character matches exactly one character? (one character)",
+      "answer": "?"
+    },
+    {
+      "id": 26,
+      "type": "text",
+      "category": "Globbing",
+      "question": "Write the glob pattern that matches names starting with 'file' followed by exactly one digit. (use a numeric range inside brackets, not a POSIX class)",
+      "answer": "file[0-9]"
+    },
+    {
+      "id": 27,
+      "type": "text",
+      "category": "Globbing",
+      "question": "Which command removes all files ending in .log in the current directory? (no options)",
+      "answer": "rm *.log"
+    },
+    {
+      "id": 28,
+      "type": "reveal",
+      "category": "Globbing",
+      "question": "Does the * glob match hidden files (names beginning with a dot)? How can you include them?",
+      "answer": "No. By default, * does not match file names that begin with a dot. To match them you must include the leading dot explicitly in the pattern (for example .*), or use an option such as ls -a to display them."
+    },
+    {
+      "id": 29,
+      "type": "text",
+      "category": "Brace Expansion",
+      "question": "What exact output does 'echo file{1..3}.txt' print?",
+      "answer": "file1.txt file2.txt file3.txt"
+    },
+    {
+      "id": 30,
+      "type": "text",
+      "category": "Brace Expansion",
+      "question": "What exact output does 'echo {a,b}{1,2}' print?",
+      "answer": "a1 a2 b1 b2"
+    },
+    {
+      "id": 31,
+      "type": "text",
+      "category": "Brace Expansion",
+      "question": "Which command creates the empty files file1, file2 and file3 using brace expansion with a numeric range?",
+      "answer": "touch file{1..3}"
+    },
+    {
+      "id": 32,
+      "type": "text",
+      "category": "Variable Expansion",
+      "question": "Which command prints the value of the HOME variable? (use echo and the $ prefix, no quotes)",
+      "answer": "echo $HOME"
+    },
+    {
+      "id": 33,
+      "type": "text",
+      "category": "Command Substitution",
+      "question": "Write only the command substitution (using the $( ) syntax) that inserts the output of the hostname command into another command.",
+      "answer": "$(hostname)"
+    },
+    {
+      "id": 34,
+      "type": "reveal",
+      "category": "Command Substitution",
+      "question": "What is command substitution, and why is $(command) preferred over backticks?",
+      "answer": "Command substitution lets the output of a command replace the command itself in another command line, for example echo Today is $(date +%A). The $(command) form is preferred because it is easier to read, and it can be nested without escaping, whereas backticks are harder to read and nest."
+    },
+    {
+      "id": 35,
+      "type": "text",
+      "category": "Quoting",
+      "question": "Which single character is the backslash used to escape the next character? (write the character itself)",
+      "answer": "\\"
+    },
+    {
+      "id": 36,
+      "type": "text",
+      "category": "Quoting",
+      "question": "What exact output does the command echo '$HOME' print?",
+      "answer": "$HOME"
+    },
+    {
+      "id": 37,
+      "type": "reveal",
+      "category": "Quoting",
+      "question": "How do single quotes, double quotes, and the backslash differ in how they affect shell expansion?",
+      "answer": "Single quotes stop all expansion, so everything inside is treated literally. Double quotes suppress most expansion (such as globbing and brace expansion) but still allow variable expansion ($VAR), command substitution ($(command)), and backslash escapes. A backslash escapes only the single character that follows it, removing its special meaning."
+    },
+    {
+      "id": 38,
+      "type": "reveal",
+      "category": "Paths",
+      "question": "You are in /home/user/docs and need to copy report.txt into /home/user/backup. Give one command using a relative path and one using an absolute path for the destination.",
+      "answer": "Relative: cp report.txt ../backup/ (.. refers to /home/user). Absolute: cp report.txt /home/user/backup/. Both give the same result; absolute paths work from any directory, while relative paths depend on the current working directory."
+    }
+  ]
+  },
+  {
+    "chapter": -1,
+    "title": "General Knowledge Question Bank",
+    "questions": [
+        {
+        "id": 1,
+        "type": "text",
+        "category": "Geography",
+        "question": "What is the capital of Australia?",
+        "answer": "Canberra"
+        },
+        {
+        "id": 2,
+        "type": "text",
+        "category": "Programming",
+        "question": "Which HTTP status code means 'Not Found'? (digits only)",
+        "answer": "404"
+        },
+        {
+        "id": 3,
+        "type": "text",
+        "category": "Chemistry",
+        "question": "What is the chemical symbol for sodium? (case matters!)",
+        "answer": "Na"
+        },
+        {
+        "id": 4,
+        "type": "reveal",
+        "category": "Computer Science",
+        "question": "Explain the difference between a process and a thread.",
+        "answer": "A process is an independent program in execution with its own memory space. A thread is a unit of execution within a process that shares the process's memory with other threads."
+        },
+        {
+        "id": 5,
+        "type": "reveal",
+        "category": "History",
+        "question": "Why did the Roman Republic fall?",
+        "answer": "A combination of factors: political violence, powerful generals with loyal armies (e.g. Marius, Sulla, Caesar), economic inequality, and the breakdown of constitutional norms, culminating in the rise of Augustus."
+        }
+    ]
+  },
+  {
+  "chapter": 9,
+  "title": "Redirection and Pipelines",
+  "questions": [
+    {
+      "id": 1,
+      "type": "text",
+      "category": "File Descriptors",
+      "question": "What is the file descriptor number of standard error (stderr)? (digit only)",
+      "answer": "2"
+    },
+    {
+      "id": 2,
+      "type": "text",
+      "category": "Redirection",
+      "question": "Which command saves the output of 'ls /etc' to the file /tmp/out.txt, overwriting any existing content? (no spaces around the operator beyond a single space before the file)",
+      "answer": "ls /etc > /tmp/out.txt"
+    },
+    {
+      "id": 3,
+      "type": "text",
+      "category": "Redirection",
+      "question": "Which command appends the output of 'date' to the file /tmp/log.txt?",
+      "answer": "date >> /tmp/log.txt"
+    },
+    {
+      "id": 4,
+      "type": "text",
+      "category": "Redirection",
+      "question": "Which command saves only the error messages of 'find /etc -name passwd' to /tmp/err.txt? (use the explicit file descriptor number)",
+      "answer": "find /etc -name passwd 2> /tmp/err.txt"
+    },
+    {
+      "id": 5,
+      "type": "text",
+      "category": "Redirection",
+      "question": "Which command runs 'find /etc -name passwd' and discards all error messages? (use the special device file in /dev)",
+      "answer": "find /etc -name passwd 2> /dev/null"
+    },
+    {
+      "id": 6,
+      "type": "text",
+      "category": "Redirection",
+      "question": "Which command sends both stdout and stderr of 'ls /etc/nonexistent' to /tmp/all.txt, overwriting it? (use the Bash &> shortcut operator)",
+      "answer": "ls /etc/nonexistent &> /tmp/all.txt"
+    },
+    {
+      "id": 7,
+      "type": "text",
+      "category": "Redirection",
+      "question": "Which command sends stdout of 'ls /etc/nonexistent' to /tmp/all.txt and then redirects stderr to the same place? (use the traditional form with 2>&1, with the stdout redirection first)",
+      "answer": "ls /etc/nonexistent > /tmp/all.txt 2>&1"
+    },
+    {
+      "id": 8,
+      "type": "text",
+      "category": "Redirection",
+      "question": "Which command saves stdout of 'ls /etc/nonexistent' to /tmp/good.txt and stderr to /tmp/bad.txt? (stdout redirection first, then stderr)",
+      "answer": "ls /etc /nonexistent > /tmp/good.txt 2> /tmp/bad.txt"
+    },
+    {
+      "id": 9,
+      "type": "text",
+      "category": "Pipelines",
+      "question": "Which command pipes the output of 'ls -l /etc' into 'less'? (single spaces around the pipe)",
+      "answer": "ls -l /etc | less"
+    },
+    {
+      "id": 10,
+      "type": "text",
+      "category": "Pipelines",
+      "question": "Which command displays the output of 'ls -l /etc' on the screen and also saves it to /tmp/etc-list.txt using the tee command? (single spaces around the pipe, no tee options)",
+      "answer": "ls -l /etc | tee /tmp/etc-list.txt"
+    },
+    {
+      "id": 11,
+      "type": "reveal",
+      "category": "Redirection and Pipelines",
+      "question": "Explain how redirection and pipelines differ, and how the order of redirection operators affects where stdout and stderr end up (for example, '> file 2>&1' versus '2>&1 > file').",
+      "answer": "Redirection connects a file descriptor of a command (stdin 0, stdout 1, stderr 2) to a file or device, using operators such as > (overwrite), >> (append), 2> (stderr), &> (both), and < (stdin). A pipeline (|) connects the stdout of one command to the stdin of the next, so that output can be processed, filtered, or displayed by another command rather than stored in a file. By default, only stdout goes through a pipe; stderr still goes to the terminal unless redirected (for example with 2>&1 before the pipe). Redirections are processed left to right. In '> file 2>&1', stdout is first sent to the file, then stderr is duplicated onto stdout's new destination, so both go to the file. In '2>&1 > file', stderr is first duplicated onto stdout's original destination (the terminal), and only then stdout is sent to the file, so stderr still appears on the terminal."
+    }
+  ]
+  },
+  {
+  "chapter": 10,
+  "title": "Manage Local Users and Groups",
+  "questions": [
+      {
+      "id": 1,
+      "type": "text",
+      "category": "Users and Groups",
+      "question": "Which command displays the UID, primary GID, and group memberships of the current user? (command only, no options)",
+      "answer": "id"
+      },
+      {
+      "id": 2,
+      "type": "text",
+      "category": "Users and Groups",
+      "question": "Which command displays the UID, GID, and group memberships of the user 'alice'?",
+      "answer": "id alice"
+      },
+      {
+      "id": 3,
+      "type": "text",
+      "category": "Users and Groups",
+      "question": "Which command displays only the names of the groups the current user belongs to? (command only, no options)",
+      "answer": "groups"
+      },
+      {
+      "id": 4,
+      "type": "text",
+      "category": "Users and Groups",
+      "question": "Which file stores user account information such as username, UID, primary GID, home directory, and login shell? (full path)",
+      "answer": "/etc/passwd"
+      },
+      {
+      "id": 5,
+      "type": "text",
+      "category": "Users and Groups",
+      "question": "Which file stores group names, GIDs, and group members? (full path)",
+      "answer": "/etc/group"
+      },
+      {
+      "id": 6,
+      "type": "text",
+      "category": "Users and Groups",
+      "question": "Which file stores hashed user passwords and password aging information? (full path)",
+      "answer": "/etc/shadow"
+      },
+      {
+      "id": 7,
+      "type": "text",
+      "category": "Users and Groups",
+      "question": "What is the UID of the root user? (digit only)",
+      "answer": "0"
+      },
+      {
+      "id": 8,
+      "type": "text",
+      "category": "Superuser Access",
+      "question": "Which command starts a login shell as root, loading root's environment? (use the short dash option, a single space between command and option, and no username)",
+      "answer": "su -"
+      },
+      {
+      "id": 9,
+      "type": "text",
+      "category": "Superuser Access",
+      "question": "Which command starts a login shell as the user 'alice'? (use the short dash option)",
+      "answer": "su - alice"
+      },
+      {
+      "id": 10,
+      "type": "text",
+      "category": "Superuser Access",
+      "question": "Which command runs 'systemctl restart sshd' as root using sudo?",
+      "answer": "sudo systemctl restart sshd"
+      },
+      {
+      "id": 11,
+      "type": "text",
+      "category": "Superuser Access",
+      "question": "Which command starts an interactive root login shell using sudo? (use the short option)",
+      "answer": "sudo -i"
+      },
+      {
+      "id": 12,
+      "type": "text",
+      "category": "Superuser Access",
+      "question": "Which command safely edits the sudoers configuration with syntax checking? (command only, no options)",
+      "answer": "visudo"
+      },
+      {
+      "id": 13,
+      "type": "text",
+      "category": "Superuser Access",
+      "question": "Which directory holds drop-in sudo configuration files? (full path, no trailing slash)",
+      "answer": "/etc/sudoers.d"
+      },
+      {
+      "id": 14,
+      "type": "text",
+      "category": "Superuser Access",
+      "question": "Which line, placed in a file in /etc/sudoers.d, gives all members of the group 'wheel' full sudo access with a password prompt? (single spaces, as 'group host=(users) commands')",
+      "answer": "%wheel ALL=(ALL) ALL"
+      },
+      {
+      "id": 15,
+      "type": "text",
+      "category": "Local User Accounts",
+      "question": "Which command creates the user 'alice' with default settings?",
+      "answer": "useradd alice"
+      },
+      {
+      "id": 16,
+      "type": "text",
+      "category": "Local User Accounts",
+      "question": "Which command sets the login shell of the existing user 'alice' to /bin/bash? (use the short option)",
+      "answer": "usermod -s /bin/bash alice"
+      },
+      {
+      "id": 17,
+      "type": "text",
+      "category": "Local User Accounts",
+      "question": "Which command creates the user 'alice' with UID 1500? (use the short option)",
+      "answer": "useradd -u 1500 alice"
+      },
+      {
+      "id": 18,
+      "type": "text",
+      "category": "Local User Accounts",
+      "question": "Which command deletes the user 'alice' and removes the home directory and mail spool? (use the short option)",
+      "answer": "userdel -r alice"
+      },
+      {
+      "id": 19,
+      "type": "text",
+      "category": "Local User Accounts",
+      "question": "Which command sets the password for the user 'alice'?",
+      "answer": "passwd alice"
+      },
+      {
+      "id": 20,
+      "type": "text",
+      "category": "Local User Accounts",
+      "question": "Which command sets the login shell of 'alice' to /sbin/nologin to prevent interactive logins? (use the short option)",
+      "answer": "usermod -s /sbin/nologin alice"
+      },
+      {
+      "id": 21,
+      "type": "text",
+      "category": "Local Group Accounts",
+      "question": "Which command creates the group 'devs'?",
+      "answer": "groupadd devs"
+      },
+      {
+      "id": 22,
+      "type": "text",
+      "category": "Local Group Accounts",
+      "question": "Which command creates the group 'devs' with GID 30000? (use the short option)",
+      "answer": "groupadd -g 30000 devs"
+      },
+      {
+      "id": 23,
+      "type": "text",
+      "category": "Local Group Accounts",
+      "question": "Which command renames the group 'devs' to 'engineers'? (use the short option)",
+      "answer": "groupmod -n engineers devs"
+      },
+      {
+      "id": 24,
+      "type": "text",
+      "category": "Local Group Accounts",
+      "question": "Which command deletes the group 'devs'?",
+      "answer": "groupdel devs"
+      },
+      {
+      "id": 25,
+      "type": "text",
+      "category": "Local Group Accounts",
+      "question": "Which command adds the existing user 'alice' to the supplementary group 'devs' without removing her from other supplementary groups? (use the two short options in the order that appends)",
+      "answer": "usermod -aG devs alice"
+      },
+      {
+      "id": 26,
+      "type": "text",
+      "category": "Local Group Accounts",
+      "question": "Which command sets the primary group of the existing user 'alice' to 'devs'? (use the short option)",
+      "answer": "usermod -g devs alice"
+      },
+      {
+      "id": 27,
+      "type": "text",
+      "category": "Password Management",
+      "question": "Which command forces the user 'alice' to change her password at next login by expiring it immediately? (use the long option with a value of 0)",
+      "answer": "chage --lastday 0 alice"
+      },
+      {
+      "id": 28,
+      "type": "text",
+      "category": "Password Management",
+      "question": "Which command sets the maximum password lifetime of 'alice' to 90 days? (use the short option)",
+      "answer": "chage -M 90 alice"
+      },
+      {
+      "id": 29,
+      "type": "text",
+      "category": "Password Management",
+      "question": "Which command sets the account expiration date of 'alice' to 2027-01-31? (use the short option and ISO date format)",
+      "answer": "chage -E 2027-01-31 alice"
+      },
+      {
+      "id": 30,
+      "type": "text",
+      "category": "Password Management",
+      "question": "Which command locks the account of 'alice' by locking its password? (use the short option of usermod)",
+      "answer": "usermod -L alice"
+      },
+      {
+      "id": 31,
+      "type": "text",
+      "category": "Password Management",
+      "question": "Which command displays the password aging information of 'alice'? (use the short option)",
+      "answer": "chage -l alice"
+      },
+      {
+      "id": 32,
+      "type": "reveal",
+      "category": "Users and Groups",
+      "question": "Describe the three types of Linux user accounts, and explain the difference between a primary group and supplementary groups.",
+      "answer": "The superuser (root, UID 0) has unrestricted access to the system. System users have low UIDs (below 1000 by default), are used by services and daemons, and normally have no interactive login shell (e.g. /sbin/nologin). Regular users have UIDs of 1000 and above, log in interactively, and have limited privileges. Every user has exactly one primary group, which is assigned as the group owner of the files the user creates (by default a private group named after the user). A user can also belong to zero or more supplementary groups, which grant additional access to files and resources shared with those groups."
+      },
+      {
+      "id": 33,
+      "type": "reveal",
+      "category": "Superuser Access",
+      "question": "Explain the difference between 'su' and 'su -', and between 'su' and 'sudo' in how they authenticate and how they run commands.",
+      "answer": "'su' switches to another user (root by default) but keeps most of the current user's environment, while 'su -' starts a full login shell with the target user's environment and working directory. 'su' requires the target user's (root's) password. 'sudo' runs a single command with elevated privileges and authenticates with the invoking user's own password, if that user is authorized in /etc/sudoers or /etc/sudoers.d. sudo is preferred because the root password is not shared, access is configured per user or group, and the commands run are logged."
+      },
+      {
+      "id": 34,
+      "type": "reveal",
+      "category": "Password Management",
+      "question": "Describe the fields in an /etc/shadow entry and how password aging, account expiration, and locking can be used to restrict a user's access.",
+      "answer": "Each /etc/shadow line has colon-separated fields: login name, hashed password, date of last password change (days since 1970-01-01), minimum password age, maximum password age, warning period, inactivity period, account expiration date, and a reserved field. Password aging (chage -m, -M, -W, -I) forces periodic password changes, and a warning is shown before the password expires. The account expiration date (chage -E) disables the account on a given date regardless of the password. A password can be locked with usermod -L (a ! is prepended to the hash), which prevents password authentication, and setting the shell to /sbin/nologin blocks interactive logins entirely."
+      }
+  ]
+  }
+]
